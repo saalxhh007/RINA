@@ -1,0 +1,807 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Gift To RINA 💖</title>
+<style>
+:root{--pink:#ff6fa3;--light:#fff0f6;--accent:#ff2d95;--card:#ffffffdd;font-family: 'Tahoma','Cairo',sans-serif}
+html,body{height:100%;margin:0;background:linear-gradient(180deg,#fff5fb,#ffeaf2);direction:rtl}
+.container{max-width:980px;margin:40px auto 18px;padding:18px}
+.card{background:var(--card);border-radius:18px;padding:18px;box-shadow:0 12px 40px rgba(0,0,0,0.06)}
+.header{text-align:center}
+.title{font-size:1.6rem;color:var(--accent);margin:6px 0}
+.subtitle{color:#b23;margin-bottom:8px}
+.lock{display:flex;flex-direction:column;align-items:center;gap:10px;padding:20px}
+input[type=password],input[type=text]{padding:12px;border-radius:12px;border:1px solid #ffd6e6;width:260px;text-align:center;font-size:1.05rem;background:rgba(255,250,252,0.9)}
+.btn{padding:10px 16px;border-radius:12px;border:none;background:var(--accent);color:white;font-weight:700;cursor:pointer}
+.btn-soft{background:#ff9fcf;color:white}
+.tabs{display:flex;gap:8px;justify-content:center;margin-top:14px;flex-wrap:wrap}
+.tab{padding:8px 12px;border-radius:10px;background:transparent;border:2px solid transparent;cursor:pointer}
+.tab.active{background:linear-gradient(90deg,var(--pink),var(--accent));color:white}
+.panes{margin-top:14px}
+.row{display:flex;gap:12px;flex-wrap:wrap}
+.col{flex:1;min-width:260px}
+.inner{padding:14px;border-radius:12px;background:linear-gradient(180deg,#fff,#fff0);min-height:160px;box-shadow:inset 0 1px 0 rgba(255,255,255,0.6)}
+.messages{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow:auto;padding-right:6px}
+.msg{align-self:flex-start;background:#fff4fb;padding:10px;border-radius:10px;max-width:85%}
+.msg.you{align-self:flex-end;background:#fff0ff}
+textarea{width:100%;min-height:120px;padding:10px;border-radius:10px;border:1px solid #ffd6e6}
+.heart-bg{position:fixed;inset:0;pointer-events:none;overflow:hidden;z-index:-1}
+.heart{position:absolute;width:28px;height:28px;background:var(--pink);transform:rotate(45deg);border-radius:4px 4px 0 0;opacity:.9}
+.heart:before,.heart:after{content:'';position:absolute;width:28px;height:28px;background:var(--pink);border-radius:50%}
+.heart:before{top:-14px;left:0}
+.heart:after{left:14px;top:0}
+.footer{text-align:center;margin-top:10px;color:#a33}
+.song-line {
+  padding: 10px;
+  background: #ffe5f2;
+  border-radius: 10px;
+  cursor: pointer;
+  border: 1px solid #ffd6ea;
+}
+.song-line:hover {
+  background: #ffc9e4;
+}
+
+.huge-heart{font-size:80px;color:var(--pink);animation:beat 1.2s infinite}
+#loveMsgPopup, #lastMsgPopup, #firstMsgPopup {
+  z-index: 2147483647;
+}
+.stitch-bottom {
+  max-width: 220px;
+  width: 80%;
+  margin-top: 20px;
+  border-radius: 16px;
+  transition: transform 0.3s;
+}
+.stitch-bottom:hover {
+  transform: scale(1.05);
+}
+
+@keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.08)}}
+.controls{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.small{font-size:0.85rem;color:#b23}
+@media(max-width:700px){.title{font-size:1.2rem}.inner{min-height:120px}input[type=password]{width:90%}textarea{min-height:120px}}
+</style>
+</head>
+<body>
+<div class="heart-bg" id="heartBg"></div>
+<div class="container">
+  <div class="card header">
+      <div class="huge-heart">💗</div>
+      <div class="title">هدية خاصة لـ RINA</div>
+
+    <div class="subtitle">ادخلي كلمة السر (عيد ميلادك) لفتح المفاجأة</div>
+    <div class="lock" id="gate">
+      <input id="passInput" type="password" placeholder="كلمة مرور" />
+      <div class="controls">
+        <button class="btn" id="enterBtn">دخول</button>
+      </div>
+    </div>
+    <div id="app" style="display:none; margin-top:12px;">
+      <div class="tabs" id="tabs">
+        <div class="tab active" data-tab="music">🎵 موسيقى</div>
+        <div class="tab" data-tab="messages">💌 رسائلي</div>
+        <div class="tab" data-tab="notes">📝 ملاحظاتك</div>
+        <div class="tab" data-tab="gallery">💖 قلوب</div>
+        </div>
+      <div class="panes">
+        <div id="music" class="pane">
+          <div class="row">
+            <div class="col inner">
+              <h3>موسيقى أهديها</h3>
+              <audio id="audioPlayer" controls>
+              </audio>
+              <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap">
+                <input id="audioFile" type="file" accept="audio/*" />
+                <button class="btn" id="loadAudio">حمل الموسيقى</button>
+                <button class="btn" id="autoplayBtn">تشغيل تلقائي (تفعيل)</button>
+              </div>
+              <div id="songList" style="display:flex;flex-direction:column;gap:6px;margin-top:10px">
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=8xg3vE8Ie_E">1</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=VuNIsY6JdUw">2</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=sRxrwjOtIag">3</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=igIfiqqVHtA">4</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=cMPEd8m79Hw">5</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=tCXGJQYZ9JA">6</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=IdneKLhsWOQ">7</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=qc2Z-OX9wnc">8</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=u9raS7-NisU">9</div>
+                  <div class="song-line" data-url="https://www.youtube.com/watch?v=M7ySK0keirY">10</div>
+            </div>
+            </div>
+          </div>
+        </div>
+        <div id="messages" class="pane" style="display:none">
+          <div class="row">
+            <div class="col inner">
+              <h3>رسائلي لها</h3>
+              <div class="messages" id="messagesList"></div>
+              <div style="margin-top:8px;display:flex;gap:8px">
+              </div>
+            </div>
+            <div class="col inner">
+              <h3>رسائل جاهزة</h3>
+              <div style="display:flex;flex-direction:column;gap:8px">
+                <button class="btn" id="firstMsgBtn" data-txt="ا بد انني اعشق عذا كيف يواسيني بيتهوفن بسنفونيته و كلنه يخبرني بالحياة على عكس موزارت الذي كان يعزف قداس موتي خلال مرضي هذا من العجيب انه و في الساعه الرابعه و نصف صباحا من يوم الخميس الموافق لثلاثين من اكتوبر لم اجد سوى بيتهوفن لكي يواسي مرضي و يخبرني بانه هناك امل، عجيب بالفعل كل ضرباته خارجة عن مسار دقات قلبي كل ما دفعت نفسي نحو الظلمات اجده يضربني بايقاع يشوشني ايقاع من الحياة كدفعه هواء تدخل الى رئتي المتعبتين ، ضربات تاتيني و تقول لا تستسلم، عش، هناك امل، حسنا لا اعتقد ان هذا غريب من الشخص الذي عزف البيانو و هو اصم على كل حال ، لا زلت في رحلتي هذه اختبر عده مشاعر لم ادري بوجودها اهمها مشاعر حبي لسرين الفتاة التي دخلت حياتي و ملأتها نورا ، لا ادري في اي مرحلة بضبط صارت كلماتها بل ثوتها فقط او وجودها يمكن ان يطغى على ضربات اصابع بيتهوفن خلال الليل ، من توقع انه يمكن تعوضها ، بعدما لجأت معظم وقتي في نفسي له من اجل الحياة و لموزارت من اجل الموت، لازلت اجد انني وجدت شخصا استطاع ان يجمع بينها ، جميل جدا ، قد يكون هذا شاعريا و قد لا يفهمه غيري و لكن الشيء الوحيد المتاكد منه انني لا اريد نسيان هذا الشعور ، لهذا اكتب بطبيعه الحال ، شعور المرض و الام الداخلي الممزوج بتعبي و سهري و حسرتي على نفسي و غضبي عن ما حققته و تهاوني ، و اللهم تقديري لتلك الفتاة التي دخلت قلبي المظلم فنظفته حقا قد لا يقرأها غيري و لكن ارغب حقا في ترك هذه الرسالة ليوم ما حسنا يمكنك الاسنراحه الان">الرسالة السابقة: أحبك</button>
+                <button class="btn"  id="lastMsgBtn" data-txt="رينا، يا نور عيوني، يا قلبًا يسكن قلبي، يا أعظم هدية من الحياة،
+
+كل لحظة أقضيها معك تصبح قصة تُحكى، كل ثانية تبعدني عنك تصبح صمتًا ثقيلًا على روحي، وكل مرة أراك فيها، أشعر أن العالم كله توقف ليتيح لي فرصة أن أحتضنك، أن أسمع ضحكتك، أن أرى نظرتك التي تقرأ قلبي قبل أن أنطق بكلمة.
+
+أكتب لك هذه الرسالة وأنا أستعيد كل يوم قضيناه سويًا، كل ضحكة، كل لمسة، كل كلمة دفعتني للأمام، كل صبر قدمته لأجلي، وكل لحظة كنتِ فيها ملهمتي، ومرشدي، وملجئي. لقد أحببتك لأنك كنتِ دائمًا حاضرة، حتى حين شعرت أن الحياة تنهار حولي، كنتِ صخرتي، كنتِ الضوء الذي يرشدني، كنتِ الحلم الذي أصبح واقعًا في قلبي.
+
+أتذكر كل عطلة نهاية أسبوع قضيناها معًا، حين أريتني المنزل الذي تحلمين بصنعه معي، وكيف كنتِ تتحدثين عن كل زاوية، كل لون، كل شعور نريد أن نجعله يعيش معنا هناك. شعرت حينها أني أعيش حلمًا أصبح حقيقة، وأن كل تعب، كل ساعة عمل، كل مجهود، كل دمعة، كل لحظة صبر، كانت تستحق من أجلك أنتِ فقط.
+
+رينا، أحبك لأنك تجعلين كل شيء في حياتي أجمل. كل أغنية أحبها تذكّرني بك، كل لحن، كل كلمة، كل نبضة في الموسيقى تجعلني أفكر فيك. أسمع أغاني تايلور سويفت وأجد فيها انعكاسًا لنا، مثل: “You are the best thing that’s ever been mine”، وأجد في كل كلمة حب يشبه الحب الذي أشعر به تجاهك، حبًا صادقًا، عميقًا، لا يعرف الحدود.
+
+كل كلمات الأغاني التي أحببتها معك، كل أشعار نزار قباني ومحمود درويش التي قرأتها لك أو تحدثت عنها، تحمل روحك، تحمل قلبك، تحمل كل ما يجعلك أنتِ، أنتِ فقط، أهم شيء في حياتي. أذكر حين قلتِ لي: “الحب الحقيقي هو أن ترى الشخص أمامك حتى في صمته”، ورأيت ذلك فيكِ بكل وضوح، رأيت الحب في عينيك، في صبرك، في لطفك، في كل شيء تفعلينه لأجلي.
+
+رينا، لا أستطيع وصف مدى شوقي لك، ولا مدى حبي لك بالكلمات فقط، لأن الكلمات تصبح صغيرة أمام كل ما أشعر به. أنا أشتاق إليك في كل دقيقة تمر، أشتاق إلى نظرتك، إلى صوتك، إلى حضنك. وكل لحظة بعيد عنك تجعل قلبي يصرخ باسمك بصمت، ويذكرني بأن حياتي بدونك لا معنى لها، وأن كل شيء أفعله، كل حلم أبنيه، كل فكرة تخطر في رأسي، هي من أجلك أنتِ فقط.
+
+أحبك لأنك علمتني معنى التضحية، معنى الصبر، معنى الحب الحقيقي. أحبك لأنك كنتِ معي حين لم يكن أحد غيرك، أحبك لأنك أظهرت لي أن الحب لا يقاس بالكلمات فقط، بل بالأفعال، وبالوقت الذي تمنحين فيه قلبك لشخص آخر بلا خوف، بلا تحفظ، بلا شروط.
+
+أتذكر تلك الليالي الطويلة حين كنا نشارك أحلامنا، حين كنا نتحدث عن المستقبل، عن بيتنا، عن حياتنا، عن كل ما سنصنعه معًا. شعرت حينها أني أعيش الحلم الذي كنت أحلم به منذ صغري، شعرت أن الحياة أهدتني أعظم هدية: أنتِ.
+
+كل لحظة معك، كل ثانية، كل كلمة، كل لمسة، تجعلني أؤمن أنني سأعمل طوال حياتي لأجعلك أسعد إنسانة في هذا العالم. سأبني لك كل شيء، سأصنع لك كل حلم، سأجعل كل يوم مليئًا بالحب، مليئًا بالسحر، مليئًا بالضحك، مليئًا بكل ما يجعلنا نحن فقط، لا أحد سوانا.
+
+رينا، اشتياقي لك لا يوصف، وحبي لك لا حدود له. أحبك كما يحب الشعراء كلماتهم، كما يحب نزار قباني الحروف حين تتراقص على الورق، كما يحب محمود درويش الوطن حين يغني له القلب، أحبك بلا شروط، بلا قيود، بلا نهاية.
+
+أتذكر كل يوم كنا نستمع فيه لموسيقى تايلور سويفت، كل أغنية كانت تذكرني بك، كانت تجعلني أبتسم حتى في أصعب اللحظات. كلمات مثل: “I don’t know about you, but I’m feeling 22” تجعل قلبي يرقص، وأشعر بالسعادة لأنها تذكرني بكل لحظة قضيناها معًا، بكل حلم تحقق، بكل لحظة حب.
+
+رينا، كل ما أفعله، كل حلم أبنيه، كل ساعة عمل، كل دمعة، كل ضحكة، كل لحظة صبر، كل شيء، هو من أجلك. أنا أعمل لأجلك، لأجلنا، لأجل المنزل الذي سنصنعه معًا، لأجل كل لحظة سعيدة نعيشها، لأجل كل حلم كبير نحققه معًا.
+
+أحبك بلا حدود، بلا قيود، بلا نهاية. أحبك كما لم يحب أحد من قبل، أحبك كما أحب الحلم الذي أصبح حقيقة، أحبك كما أحب كل لحظة أعيشها معك، أحبك كما أحب نفسي حين أكون بجانبك.
+
+رينا، أنتِ حياتي، أنتِ قلبي، أنتِ حلمي، أنتِ مستقبلي، أنتِ كل ما أريد أن أراه، كل ما أريد أن أعيشه، كل ما أريد أن أكونه. أحبك بلا نهاية، وسأظل أحبك، وسأظل أعمل لأجلك، وسأظل أشتاق إليك، وسأظل أحلم بك، وسأظل أنتظر اليوم الذي سأصبح فيه زوجك، واليوم الذي سنصنع فيه كل حلمنا معًا، يومًا بعد يوم، لحظة بعد لحظة، قلب بعد قلب.
+
+مع كل قلبي وروحي،" >اخر رسالة(افتحني)</button>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="notes" class="pane" style="display:none">
+        <div class="inner">
+            <button class="btn" id="downloadAllNotes" style="margin-top:12px;">تحميل جميع الملاحظات</button>
+            <h3>• ملاحظاتك •</h3>
+
+            <div id="loveBoxes" style="
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+            ">
+            </div>
+        </div>
+        </div>
+        <div id="gallery" class="pane" style="display:none">
+          <div class="inner">
+            <h3>قلب وردي — تفاعلي</h3>
+            <div id="pinkStage" style="min-height:180px;border-radius:10px;border:1px dashed #ffd6e6;margin-top:8px;position:relative;overflow:hidden"></div>
+            <div style="margin-top:8px;display:flex;gap:8px;justify-content:center">
+              <button class="btn" id="rainHearts">أمطار القلوب</button>
+              <button class="btn" id="clearHearts">امسح القلوب</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="footer">صُنِعَ بحب — إيادي-رينا ❤️</div>
+    </div>
+  </div>
+</div>
+<div id="loveMsgPopup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  padding: 20px;
+">
+  <div style="
+    background: white;
+    width: 90%;
+    max-width: 400px;
+    padding: 25px 30px;
+    border-radius: 20px;
+    text-align: center;
+    animation: pop 0.4s ease;
+  ">
+    <div style="font-size: 60px; animation: beat 1.2s infinite">💗</div>
+    <p id="loveMsgText" style="
+      margin-top: 15px;
+      color:#ff2d95;
+      font-size: 1.2rem;
+      line-height: 1.6;
+      white-space: pre-line;
+    "></p>
+    <button onclick="closeLoveMsg()" style="
+      margin-top: 18px;
+      padding: 10px 24px;
+      background:#ff2d95;
+      border:none;
+      border-radius:14px;
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      font-size:1rem;
+    ">فهمت ❤️</button>
+  </div>
+</div>
+
+<div id="stitchContainer" style="text-align:center; margin-top:12px;">
+  <img src="https://pngimg.com/uploads/stitch/stitch_PNG55.png" alt="Stitch" class="stitch-bottom" />
+</div>
+<audio id="loginMusic" autoplay loop>
+  <source src="https://dorar.at/large/puretunemp3/rqfoaj5oek9wwip89pvpsg/1763539200/201405/223.mp3" type="audio/mpeg">
+  Your browser does not support the audio element.
+</audio>
+
+<script>
+const SECRET_PASS = '30042004';
+const gate = document.getElementById('gate');
+const app = document.getElementById('app');
+const enterBtn = document.getElementById('enterBtn');
+const passInput = document.getElementById('passInput');
+
+const loveMessages = [
+  "كل لحظة معك تتلألأ كالنجوم",
+  "You make my heart skip beats",
+  "حبك يجعل أيامي مليئة بالألوان",
+  "I’d cross oceans just to see you smile",
+  "أنت اللحن الذي يعزف في قلبي بلا توقف",
+  "You’re the answer to every prayer",
+  "وجودك يجعل قلبي يغني بلا توقف",
+  "I could spend forever lost in your eyes",
+  "أحبك كما لو أن روحي ملك لك",
+  "I never want to let go of you",
+  "أنت الأمل الذي لا ينتهي",
+  "You are my safest place",
+  "وفي قلبي نهر من الشوق لا يجف مهما طال الزمان",
+  "My soul dances in the light of your smile, endless and free",
+  "رؤيتك تجعل يومي أفضل مهما كانت الظروف",
+  "Every moment with you feels like a new adventure",
+  "أنت رينا، وكل لحظة معك هي حياة جديدة لي",
+  "Just be yourself, there is no one better",
+  "I could stay awake just to hear you breathing",
+  "أحبك كما تحب النجوم السماء في صمت الليل",
+  "In your eyes, I found a home I never knew I needed",
+  "ضحكتك تضيء لي دروبًا لم أرها من قبل",
+  "Sometimes the smallest things take up the most room in your heart",
+  "كل كلمة تقولها تجعل قلبي يخفق أكثر",
+  "No one’s going to love you like you deserve—except yourself",
+  "And I will love you till the end of time",
+  "أهيم بك كما يهيم الغريب في صحراء العشق",
+  "Love is not just a feeling; it’s a journey with you",
+  "كل يوم بدونك يبدو كليلة بلا قمر",
+  "You are the reason I look forward to every morning",
+  "وجودك بجانبي يجعل العالم كله يبتسم لي",
+  "People haven’t always been there for me, but music always has",
+  "I’ll be loving you forever, no matter where life takes us",
+  "يا من ملكت قلبي وروحي، أحبك بلا حدود",
+  "The stars whispered your name, and my heart answered",
+  "حين أمسك يدك أشعر أني أستطيع الصعود إلى السماء",
+  "Your touch is my favorite feeling",
+  "كل لحظة معك كنز لن ينتهي",
+  "I fall in love with you all over again every day",
+  "أنت الأغنية التي أريد أن أعيدها بلا توقف",
+  "Your love is my greatest adventure",
+  "قلبي ملك لك وحدك بلا استثناء",
+  "Being loved by you is my favorite feeling",
+  "أهيم بحبك كما يهيم البحر بلا شاطئ",
+  "You are the poetry I never knew how to write",
+  "معك كل شيء يصبح أجمل بلا حدود",
+  "You’re my today and all of my tomorrows",
+  "حبك يملأ كل زوايا قلبي بالدفء",
+  "I never want to stop making memories with you",
+  "كل لحظة بدونك تبدو كعمر ضائع",
+  "You are my forever and always",
+  "أحبك كما لو أن قلبي يعرف طريقك قبل عيني",
+  "The night is nothing without your light",
+  "حبك هو القصيدة التي لا تنتهي",
+  "Every heartbeat whispers your name",
+  "حين أمسك يدك أشعر أني أستطيع الصعود إلى السماء",
+  "You complete the missing pieces of me",
+  "كل لحظة معك كنز لن ينتهي",
+  "I fall in love with you all over again every day",
+  "أنت الأغنية التي أريد أن أعيدها بلا توقف",
+  "Your love is my greatest adventure",
+  "قلبي ملك لك وحدك بلا استثناء",
+  "Being loved by you is my favorite feeling",
+  "أهيم بحبك كما يهيم البحر بلا شاطئ",
+  "You are the poetry I never knew how to write",
+  "معك كل شيء يصبح أجمل بلا حدود",
+  "You’re my today and all of my tomorrows",
+  "حبك يملأ كل زوايا قلبي بالدفء",
+  "I never want to stop making memories with you",
+  "كل لحظة بدونك تبدو كعمر ضائع",
+  "You are my forever and always",
+  "أنت سبب سعادتي وابتسامتي",
+  "I see the world in color when I see you",
+  "كل كلمة منك تزرع في قلبي وردة",
+  "I don’t need paradise because I found you",
+  "قلبي يهمس باسمك بلا توقف",
+  "You make me believe in magic again",
+  "أحبك أكثر مما تستطيع الكلمات وصفه",
+  "I want to hold your hand through everything",
+  "كل ثانية معك تساوي أعوامًا من السعادة",
+  "Your eyes tell stories words cannot",
+  "أحبك كما لو أن الزمان وقف عندك",
+  "With you, I am fearless and free",
+  "حبك يشبه الشاي الدافئ في صباح بارد",
+  "You are the best part of my day",
+  "كل يوم معك مغامرة لا تنتهي",
+  "I’d choose you over and over again",
+  "أحبك وكأن قلبي وحده يعرف الطريق إليك",
+  "Your love is my safe place",
+  "كل نبضة في قلبي تنطق باسمك",
+  "I can’t imagine my life without you",
+  "أنت الضوء الذي يزيّن ظلامي",
+  "You’re the reason my heart smiles",
+  "حبك يجعل العالم يبدو وكأنه أغنية",
+  "Being with you is like a dream I never want to end",
+  "أنت الريح التي تحملني بعيدًا عن كل هموم",
+  "Your touch is my favorite feeling",
+  "كل لحظة معك تتلألأ كالنجوم",
+  "You make my heart skip beats",
+  "حبك يجعل أيامي مليئة بالألوان",
+  "I’d cross oceans just to see you smile",
+  "أنت اللحن الذي يعزف في قلبي بلا توقف",
+  "You’re the answer to every prayer",
+  "وجودك يجعل قلبي يغني بلا توقف",
+  "I could spend forever lost in your eyes",
+  "أحبك كما لو أن روحي ملك لك",
+  "I never want to let go of you",
+  "أنت الأمل الذي لا ينتهي",
+  "You are my sun on cloudy days",
+  "I want to spend my life making you happy",
+  "أنت الحب الذي لم أتوقعه",
+  "Your smile is my favorite masterpiece",
+  "معك كل لحظة تصبح خالدّة",
+  "I love you more than words can say",
+  "كل يوم بدونك يبدو بلا طعم",
+  "You are my heart, my soul, my everything",
+  "Every second with you is a gift",
+  "حبك يجعل قلبي يطير بلا جناحين",
+  "I never want to let go of you",
+  "أنت الأمان الذي لم أجده إلا فيك",
+  "You are the light that brightens my darkest days",
+  "أحبك إلى ما لا نهاية"
+];
+
+const loveBoxes = document.getElementById('loveBoxes');
+for(let i = 1; i <= 100; i++){
+    const box = document.createElement('div');
+    box.textContent = i;
+    box.style.padding = "15px";
+    box.style.background = "#ffe5f2";
+    box.style.border = "1px solid #ffbcd8";
+    box.style.borderRadius = "12px";
+    box.style.textAlign = "center";
+    box.style.fontWeight = "bold";
+    box.style.cursor = "pointer";
+    box.style.transition = "0.2s";
+
+    box.onmouseenter = () => box.style.background = "#ffcce6";
+    box.onmouseleave = () => box.style.background = "#ffe5f2";
+
+    function showLoveMsg(msg){
+    const popup = document.getElementById('loveMsgPopup');
+    document.getElementById('loveMsgText').textContent = msg;
+    popup.style.display = 'flex';
+    }
+    const lastMsgBtn = document.getElementById('lastMsgBtn');
+    const firstMsgBtn = document.getElementById('firstMsgBtn');
+    if (lastMsgBtn) {
+        lastMsgBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const msg = lastMsgBtn.dataset.txt;
+            document.getElementById('lastMsgText').textContent = msg;
+            document.getElementById('lastMsgPopup').style.display = 'flex';
+        });
+    }
+    if (firstMsgBtn) {
+        firstMsgBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            const msg = firstMsgBtn.dataset.txt;
+            document.getElementById('firstMsgText').textContent = msg;
+            document.getElementById('firstMsgPopup').style.display = 'flex';
+        });
+    }
+    function closeLastMsgPopup(){
+    document.getElementById('lastMsgPopup').style.display = 'none';
+    }
+    function closeMsgPopup(){
+    document.getElementById('lastMsgPopup').style.display = 'none';
+    }
+    function closeLoveMsg(){
+    const popup = document.getElementById('loveMsgPopup');
+    popup.style.display = 'none';
+    }
+
+    const loveMsgPopup = document.getElementById('loveMsgPopup');
+    loveMsgPopup.addEventListener('click', (e)=>{
+    if(e.target === loveMsgPopup){
+        closeLoveMsg();
+    }
+    });
+    box.onclick = () => {
+    const index = (i - 1) % loveMessages.length;
+    const msg = loveMessages[index];
+    showLoveMsg(msg);
+    };
+
+    loveBoxes.appendChild(box);
+}
+function openApp(){ 
+  
+  gate.style.display = 'none'; 
+  app.style.display = 'block'; 
+
+  const stitch = document.getElementById('stitchContainer');
+  if(stitch) stitch.style.display = 'none';
+  function spawnHeartsInGallery(){
+    const stage = document.getElementById('pinkStage');
+    for(let i=0; i<50; i++){
+        setTimeout(()=>{
+            const x = Math.random() * stage.clientWidth;
+            const y = Math.random() * stage.clientHeight;
+            createHeartAt(stage, x, y, true);
+        }, i*50);
+    }
+}
+  document.querySelectorAll('.tab').forEach(t => {
+  t.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+    t.classList.add('active');
+    
+    const tab = t.dataset.tab;
+    document.querySelectorAll('.pane').forEach(p => p.style.display = 'none');
+    document.getElementById(tab).style.display = 'block';
+    
+    if (tab === 'gallery') {
+      const stage = document.getElementById('pinkStage');
+      for (let i = 0; i < 100; i++) {
+        setTimeout(() => {
+          const x = Math.random() * stage.clientWidth;
+          const y = Math.random() * stage.clientHeight;
+          createHeartAt(stage, x, y, true);
+        }, i * 50);
+      }
+    }
+  });
+});
+
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => {
+      document.querySelectorAll('.tab').forEach(x => x.classList.remove('active'));
+      t.classList.add('active');
+      const tab = t.dataset.tab;
+      document.querySelectorAll('.pane').forEach(p => p.style.display='none');
+      document.getElementById(tab).style.display='block';
+
+      if(tab === 'gallery'){
+          spawnHeartsInGallery();
+      }
+  }));
+  const rainHeartsBtn = document.getElementById('rainHearts');
+  const clearHeartsBtn = document.getElementById('clearHearts');
+  const pinkStage = document.getElementById('pinkStage');
+
+  rainHeartsBtn.addEventListener('click', () => {
+      for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+              const x = Math.random() * pinkStage.clientWidth;
+              const y = Math.random() * pinkStage.clientHeight;
+              createHeartAt(pinkStage, x, y, true);
+          }, i * 50);
+      }
+  });
+
+  clearHeartsBtn.addEventListener('click', () => {
+      pinkStage.innerHTML = '';
+  });
+const loginMusic = document.getElementById("loginMusic");
+
+enterBtn.addEventListener("click", () => {
+  const v = (passInput.value||'').trim();
+  if (v === SECRET_PASS) {
+    // Stop music
+    loginMusic.pause();
+    loginMusic.currentTime = 0;
+
+    // Proceed with showing the app
+    gate.style.display = 'none';
+    app.style.display = 'block';
+    const stitch = document.getElementById('stitchContainer');
+    if (stitch) stitch.style.display = 'none';
+
+    // (Then the rest of openApp stuff)
+    openApp();
+  } else {
+    alert('كلمة السر خاطئة ❤️');
+  }
+});
+
+  startApp(); 
+}
+enterBtn.addEventListener('click', ()=>{
+  const v = (passInput.value||'').trim();
+  if(v===SECRET_PASS){ openApp(); }
+  else alert('كلمة السر خاطئة ❤️');
+});
+passInput.addEventListener('keydown', e=>{ if(e.key==='Enter') enterBtn.click(); });
+
+function startApp(){
+    gate.style.display = 'none';
+    app.style.display = 'block';
+    const subtitle = document.querySelector('.subtitle');
+    if(subtitle){
+        subtitle.textContent = 'هذا ما يقدمه لك ايادك بعد غياب';
+    }
+  document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const tab = t.dataset.tab;
+    document.querySelectorAll('.pane').forEach(p=>p.style.display='none');
+    document.getElementById(tab).style.display='block';
+  }));
+    document.querySelectorAll('.song-line').forEach(line => {
+      line.addEventListener('click', () => {
+      const url = line.dataset.url;
+      window.open(url, "_blank");
+    });
+  });
+
+  
+
+  const messagesList = document.getElementById('messagesList');
+  const newMsg = document.getElementById('newMsg');
+  const sendMsg = document.getElementById('sendMsg');
+  const preBtns = document.querySelectorAll('[data-txt]');
+  function loadMessages(){
+    const data = JSON.parse(localStorage.getItem('rina_msgs')||'[]');
+    messagesList.innerHTML='';
+    data.forEach(m=>{ const d=document.createElement('div'); d.className='msg'; d.textContent=m; messagesList.appendChild(d); });
+    messagesList.scrollTop = messagesList.scrollHeight;
+  }
+  loadMessages();
+  sendMsg.addEventListener('click', ()=>{
+    const v=newMsg.value.trim(); if(!v) return;
+    const arr=JSON.parse(localStorage.getItem('rina_msgs')||'[]'); arr.push(v); localStorage.setItem('rina_msgs', JSON.stringify(arr)); newMsg.value=''; loadMessages();
+  });
+  preBtns.forEach(b=>b.addEventListener('click', ()=>{
+    const t=b.dataset.txt; const arr=JSON.parse(localStorage.getItem('rina_msgs')||'[]'); arr.push(t); localStorage.setItem('rina_msgs', JSON.stringify(arr)); loadMessages();
+    if(b.dataset.secret!==undefined) alert('رسالة عيد ميلاد أُرسلت! 🎂');
+  }));
+
+  const notesArea = document.getElementById('notesArea');
+  const savedAt = document.getElementById('savedAt');
+  function loadNotes(){ notesArea.value = localStorage.getItem('rina_notes')||''; const s = localStorage.getItem('rina_notes_saved'); savedAt.textContent = s? new Date(parseInt(s)).toLocaleString() : '-'; }
+  loadNotes();
+  let saveTimer;
+  notesArea.addEventListener('input', ()=>{ clearTimeout(saveTimer); saveTimer=setTimeout(()=>{ localStorage.setItem('rina_notes', notesArea.value); localStorage.setItem('rina_notes_saved', Date.now()); savedAt.textContent = new Date().toLocaleString(); },600) });
+  document.getElementById('downloadNotes').addEventListener('click', ()=>{
+    const text = notesArea.value || '';
+    const blob = new Blob([text], {type: 'text/plain;charset=utf-8'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href=url; a.download = 'rina_notes.txt'; a.click(); URL.revokeObjectURL(url);
+  });
+
+  const audioFile = document.getElementById('audioFile');
+  const loadAudio = document.getElementById('loadAudio');
+  const audioPlayer = document.getElementById('audioPlayer');
+  loadAudio.addEventListener('click', ()=>{
+    const f = audioFile.files[0]; if(!f) return alert('اختر ملفًا صوتيًا أولًا');
+    const url = URL.createObjectURL(f); audioPlayer.src=url; audioPlayer.play();
+  });
+
+  const pinkStage = document.getElementById('pinkStage');
+  pinkStage.addEventListener('click', (e)=>{
+    const rect = pinkStage.getBoundingClientRect();
+    const x = e.clientX - rect.left; const y = e.clientY - rect.top;
+    createHeartAt(pinkStage, x, y, true);
+  });
+  document.getElementById('rainHearts').addEventListener('click', () => {
+      const stage = document.getElementById('pinkStage');
+      for (let i = 0; i < 50; i++) {
+          setTimeout(() => {
+              const x = Math.random() * stage.clientWidth;
+              const y = Math.random() * stage.clientHeight;
+              createHeartAt(stage, x, y, true);
+          }, i * 50);
+      }
+  });
+
+
+  document.getElementById('clearHearts').addEventListener('click', ()=>{ pinkStage.innerHTML=''; });
+
+  if(!localStorage.getItem('rina_msgs')) localStorage.setItem('rina_msgs', JSON.stringify(['أنتِ أجمل ما رأيت', 'أحبك إلى ما لا نهاية']));
+  loadMessages();
+  let lastMessageText = "";
+
+  document.getElementById('downloadAllNotes').addEventListener('click', () => {
+    const boxes = document.querySelectorAll('#loveBoxes div');
+    if (!boxes.length) return alert('لا توجد ملاحظات للتحميل!');
+    let allNotes = '';
+    boxes.forEach((box, index) => {
+        const msg = loveMessages[index % loveMessages.length];
+        allNotes += `${index + 1}. ${msg}\n\n`;
+    });
+    const blob = new Blob([allNotes], { type: 'text/plain;charset=utf-8' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'rina_all_notes.txt';
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    URL.revokeObjectURL(url);
+});
+  const lastMsgBtn = Array.from(preBtns).find(b => b.textContent.includes('اخر رسالة'));
+
+  if(lastMsgBtn){
+    lastMsgBtn.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      lastMessageText = lastMsgBtn.dataset.txt || "أنت آخر رسالة في قلبي ❤️";
+      showLastMsgPopup();
+    });
+  }
+  function showLastMsgPopup(){
+    document.getElementById('lastMsgText').textContent = lastMessageText;
+    document.getElementById('lastMsgPopup').style.display = 'flex';
+  }
+  function showFirstMsgPopup(){
+    document.getElementById('firstMsgText').textContent = lastMessageText;
+    document.getElementById('firstMsgPopup').style.display = 'flex';
+  }
+
+  function closeLastMsgPopup(){
+    document.getElementById('lastMsgPopup').style.display = 'none';
+  }
+
+  function closeFirstMsgPopup(){
+    document.getElementById('firstMsgPopup').style.display = 'none';
+  }
+  const musicButtons = document.querySelectorAll('.music-btn');
+    const audioSrc = document.getElementById('audioSrc');
+
+    musicButtons.forEach(btn => {
+    btn.addEventListener('click', () => {
+        const src = btn.dataset.src;
+        audioSrc.src = src;
+        audioPlayer.load();
+        audioPlayer.play();
+    });
+    });
+
+}
+
+function createHeartAt(root, x, y, floatUp=false){
+  const h = document.createElement('div'); h.className='heart';
+  const size = 18 + Math.random()*36; h.style.width = h.style.height = size+'px';
+  h.style.left = (x - size/2) + 'px'; h.style.top = (y - size/2) + 'px'; root.appendChild(h);
+  if(floatUp){ h.animate([{transform:'translateY(0) rotate(45deg) scale(0.8)', opacity:1},{transform:'translateY(-120px) rotate(45deg) scale(1.2)', opacity:0}],{duration:1400+Math.random()*1000,easing:'linear'}).onfinish=()=>h.remove(); } 
+  else { setTimeout(()=>h.remove(),3000); }
+}
+const bgRoot = document.getElementById('heartBg');
+
+function makeBgHeart(){
+    const h = document.createElement('div');
+    h.className='heart';
+    const size = 10 + Math.random()*30; 
+    h.style.width = h.style.height = size+'px';
+    h.style.left = Math.random()*100+'%';
+    h.style.top = Math.random()*100+'%';
+    bgRoot.appendChild(h);
+
+    const dur = 8000 + Math.random()*6000;
+    h.animate([
+        {transform:'translateY(0) rotate(45deg) scale(0.8)', opacity:1},
+        {transform:`translateY(-${120 + Math.random()*50}vh) rotate(45deg) scale(1.2)`, opacity:0}
+    ], {
+        duration: dur,
+        easing:'linear'
+    }).onfinish = ()=>h.remove();
+}
+
+for(let i=0; i<50; i++){
+    setTimeout(makeBgHeart, i*100);
+}
+
+setInterval(makeBgHeart, 200);
+
+for(let i=0;i<8;i++) setTimeout(makeBgHeart, i*300); setInterval(makeBgHeart, 700);
+const rainBtn = document.getElementById('rainHearts');
+const clearBtn = document.getElementById('clearHearts');
+const pinkStage = document.getElementById('pinkStage');
+
+rainBtn.addEventListener('click', () => {
+  for (let i = 0; i < 25; i++) {
+    const h = document.createElement('div');
+    h.className = 'heart';
+    h.style.left = Math.random() * 100 + '%';
+    h.style.top = '-50px';
+    h.style.opacity = 0.8;
+    h.style.transform = 'scale(' + (0.6 + Math.random()) + ') rotate(45deg)';
+    h.style.position = 'absolute';
+
+    pinkStage.appendChild(h);
+
+    // Fall animation
+    const duration = 2000 + Math.random() * 2000;
+    h.animate(
+      [
+        { transform: h.style.transform + ' translateY(0)' },
+        { transform: h.style.transform + ' translateY(250px)' }
+      ],
+      { duration, easing: 'ease-in' }
+    ).onfinish = () => h.remove();
+  }
+});
+
+clearBtn.addEventListener('click', () => {
+  pinkStage.innerHTML = "";
+});
+
+</script>
+<div id="lastMsgPopup" style="
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.5);
+  backdrop-filter: blur(5px);
+  display: none; align-items: center; justify-content: center;
+  z-index: 9999; padding: 20px;
+">
+  <div style="
+    background: white;
+    width: 90%;
+    max-width: 520px;
+    padding: 25px 30px;
+    border-radius: 22px;
+    text-align: center;
+    max-height: 80vh;
+    overflow-y: auto;
+    animation: pop 0.4s ease;
+  ">
+    <div style="font-size: 80px; animation: beat 1.2s infinite">💗</div>
+    <h3 style="color:#ff2d95; margin-top: 10px; font-size: 1.4rem;">آخر رسالة لك ❤️</h3>
+
+    <p id="lastMsgText" style="
+      margin-top: 10px;
+      color:#333;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      white-space: pre-line;
+    "></p>
+    <p id="firstMsgText" style="
+      margin-top: 10px;
+      color:#333;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      white-space: pre-line;
+    "></p>
+
+    <button onclick="closeLastMsgPopup()" style="
+      margin-top: 18px;
+      padding: 12px 24px;
+      background:#ff2d95;
+      border:none;
+      border-radius:14px;
+      color:white;
+      font-weight:700;
+      cursor:pointer;
+      font-size:1rem;
+    ">فهمت ❤️</button>
+  </div>
+</div>
+
+<style>
+@keyframes pop {0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes beat {0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+
+@keyframes pop {0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes beat {0%,100%{transform:scale(1)}50%{transform:scale(1.15)}}
+</style>
+
+</body>
+</html> 
